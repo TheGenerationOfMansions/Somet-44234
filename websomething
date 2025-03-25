@@ -4,100 +4,109 @@ local HttpService = game:GetService("HttpService")
 local plr = game:GetService("Players").LocalPlayer
 local gameInfo = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
 
-local verificationKey = "RonnieArtestYogurtMoney"
-
-local encryptedKey = {"M", "i", "k", "e", "S"}
-local function decryptKey()
-	return table.concat(encryptedKey)
+local function secureKey(data)
+    return setmetatable({}, {
+        __index = function(_, key)
+            if key == "value" then
+                return table.concat(data)
+            end
+        end,
+        __newindex = function(_, _, _)
+            plr:Kick("[ Security ] : Attempted to modify secret key.")
+        end
+    })
 end
 
+local secretKey = secureKey({"M", "i", "k", "e", "S"})
+local verificationKey = secureKey({"O", "t", "Y", "B", "d", "f", "N", "B", "I", "2"})
+
 local function GenerateDynamicHash(arg)
-	if arg == decryptKey() then
-		return HttpService:UrlEncode(decryptKey())
-	else
-		return "TheSecretKeyThatMakesThisWorks"
-	end
+    if arg == secretKey.value then
+        return HttpService:UrlEncode(secretKey.value) 
+    else
+        return "TheSecretKeyThatMakesThisWorks"
+    end
 end
 
 local protected = {}
 local function VerifyHash(HashToken)
-	local generatedHash = GenerateDynamicHash(decryptKey())
-	return HashToken == generatedHash
+    local generatedHash = GenerateDynamicHash(secretKey.value)
+    return HashToken == generatedHash
 end
 
 local functionProxy = setmetatable({}, {
-	__index = function(_, key)
-		if key == "VerifyHash" then
-			return function(...)
-				local result = VerifyHash(...)
-				if result ~= true and result ~= false then
-					plr:Kick("Invalid hash result detected.")
-				end
-				return result
-			end
-		else
-			return rawget(protected, key)
-		end
-	end,
-	__newindex = function(_, _, _)
-		plr:Kick("[ Security ] : Attempted to modify protected functions.")
-	end
+    __index = function(_, key)
+        if key == "VerifyHash" then
+            return function(...)
+                local result = VerifyHash(...)
+                if result ~= true and result ~= false then
+                    plr:Kick("Invalid hash result detected.")
+                end
+                return result
+            end
+        else
+            return rawget(protected, key)
+        end
+    end,
+    __newindex = function(_, _, _)
+        plr:Kick("[ Security ] : Attempted to modify protected functions.")
+    end
 })
 
 protected.VerifyHash = VerifyHash
 
 local function CheckDevice()
-	local platform = game:GetService("UserInputService"):GetPlatform()
-	if platform == Enum.Platform.Android then
-		return "Android"
-	elseif platform == Enum.Platform.IOS then
-		return "iPhone"
-	else
-		return "PC"
-	end
+    local platform = game:GetService("UserInputService"):GetPlatform()
+    if platform == Enum.Platform.Android then
+        return "Android"
+    elseif platform == Enum.Platform.IOS then
+        return "iPhone"
+    else
+        return "PC"
+    end
 end
 
 function WebhookManager.SendWebhook(HashToken, Url, Title, Description)
-	if not functionProxy.VerifyHash(HashToken) then
-		return false, "Invalid Hash"
-	end
+    if not functionProxy.VerifyHash(HashToken) then
+        return false, "Invalid Hash"
+    end
 
-	local Headers = {
-		['Content-Type'] = 'application/json',
-	}
+    local Headers = {
+        ['Content-Type'] = 'application/json',
+    }
 
-	local data = {
-		["embeds"] = {
-			{
-				["author"] = {
-					["name"] = Title,
-					["icon_url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. plr.UserId .. "&width=420&height=420"
-				},
-				["description"] = Description,
-				["type"] = "rich",
-				["color"] = tonumber(0xffffff),
-				["fields"] = {
-					{["name"] = "HWID :", ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(), ["inline"] = true},
-					{["name"] = "Player Username :", ["value"] = plr.Name, ["inline"] = true},
-					{["name"] = "Player DisplayName :", ["value"] = plr.DisplayName, ["inline"] = true},
-					{["name"] = "Player UserId :", ["value"] = plr.UserId, ["inline"] = true},
-					{["name"] = "Player Account Age :", ["value"] = plr.AccountAge, ["inline"] = true},
-					{["name"] = "Executor :", ["value"] = identifyexecutor(), ["inline"] = true},
-					{["name"] = "Using Script :", ["value"] = gameInfo and gameInfo.Name or "Unknown", ["inline"] = true},
-					{["name"] = "Device :", ["value"] = CheckDevice(), ["inline"] = true},
-				},
-			},
-		},
-	}
+    local data = {
+        ["embeds"] = {
+            {
+                ["author"] = {
+                    ["name"] = Title,
+                    ["icon_url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. plr.UserId .. "&width=420&height=420"
+                },
+                ["description"] = Description,
+                ["type"] = "rich",
+                ["color"] = tonumber(0xffffff),
+                ["fields"] = {
+                    {["name"] = "HWID :", ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(), ["inline"] = true},
+                    {["name"] = "Player Username :", ["value"] = plr.Name, ["inline"] = true},
+                    {["name"] = "Player DisplayName :", ["value"] = plr.DisplayName, ["inline"] = true},
+                    {["name"] = "Player UserId :", ["value"] = plr.UserId, ["inline"] = true},
+                    {["name"] = "Player Account Age :", ["value"] = plr.AccountAge, ["inline"] = true},
+                    {["name"] = "Executor :", ["value"] = identifyexecutor(), ["inline"] = true},
+                    {["name"] = "Using Script :", ["value"] = gameInfo and gameInfo.Name or "Unknown", ["inline"] = true},
+                    {["name"] = "Device :", ["value"] = CheckDevice(), ["inline"] = true},
+                },
+            },
+        },
+    }
 
-	local PlayerData = HttpService:JSONEncode(data)
-	local Request = http_request or request or HttpPost or syn.request
-	Request({Url = Url, Body = PlayerData, Method = "POST", Headers = Headers})
+    local PlayerData = HttpService:JSONEncode(data)
+    local Request = http_request or request or HttpPost or syn.request
+    Request({Url = Url, Body = PlayerData, Method = "POST", Headers = Headers})
 
-	return true, "Webhook Sent Successfully"
+    return true, "Webhook Sent Successfully"
 end
 
 WebhookManager.GenerateDynamicHash = GenerateDynamicHash
-WebhookManager.VerificationHash = HttpService:UrlEncode(verificationKey)
+WebhookManager.VerificationHash = HttpService:UrlEncode(verificationKey.value)
 
 return WebhookManager

@@ -5,7 +5,9 @@ local secretKey = "MikeS"  -- Your secret key
 
 local function GenerateDynamicHash(arg)
 	if arg == secretKey then
-	return HttpService:UrlEncode(secretKey)
+		return HttpService:UrlEncode(secretKey)
+	else
+		return "Access Blocked"
 	end
 end
 

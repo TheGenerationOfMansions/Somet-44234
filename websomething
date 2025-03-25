@@ -1,37 +1,62 @@
 local WebhookManager = {}
 
 local HttpService = game:GetService("HttpService")
-local secretKey = "MikeS"  -- Your secret key
+local plr = game:GetService("Players").LocalPlayer
+local gameInfo = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
+
+local encryptedKey = {"M", "i", "k", "e", "S"}
+local function decryptKey()
+	return table.concat(encryptedKey) -- Decrypts to "MikeS"
+end
 
 local function GenerateDynamicHash(arg)
-	if arg == secretKey then
-		return HttpService:UrlEncode(secretKey)
+	if arg == decryptKey() then
+		return HttpService:UrlEncode(decryptKey())
 	else
 		return "Access Blocked"
 	end
 end
 
+local protected = {}
 local function VerifyHash(HashToken)
-	local generatedHash = GenerateDynamicHash(secretKey)
+	local generatedHash = GenerateDynamicHash(decryptKey())
 	return HashToken == generatedHash
 end
 
+local functionProxy = setmetatable({}, {
+	__index = function(_, key)
+		if key == "VerifyHash" then
+			return function(...)
+				local result = VerifyHash(...)
+				if result ~= true and result ~= false then
+					plr:Kick("Invalid hash result detected.")
+				end
+				return result
+			end
+		else
+			return rawget(protected, key)
+		end
+	end,
+	__newindex = function(_, key, value)
+		plr:Kick("[ Security ] : Attempted to modify protected functions.")
+	end
+})
 
+protected.VerifyHash = VerifyHash
 
 local function CheckDevice()
 	local platform = game:GetService("UserInputService"):GetPlatform()
-
 	if platform == Enum.Platform.Android then
 		return "Android"
 	elseif platform == Enum.Platform.IOS then
-		return "IPhone"
+		return "iPhone"
 	else
 		return "PC"
 	end
 end
 
 function WebhookManager.SendWebhook(HashToken, Url, Title, Description)
-	if not VerifyHash(HashToken) then
+	if not functionProxy.VerifyHash(HashToken) then
 		return false, "Invalid Hash"
 	end
 
@@ -44,52 +69,20 @@ function WebhookManager.SendWebhook(HashToken, Url, Title, Description)
 			{
 				["author"] = {
 					["name"] = Title,
-					["icon_url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. game.Players.LocalPlayer.UserId .. "&width=420&height=420"
+					["icon_url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. plr.UserId .. "&width=420&height=420"
 				},
 				["description"] = Description,
 				["type"] = "rich",
 				["color"] = tonumber(0xffffff),
 				["fields"] = {
-					{
-						["name"] = "HWID :",
-						["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
-						["inline"] = true,
-					},
-					{
-						["name"] = "Player Username :",
-						["value"] = game.Players.LocalPlayer.Name,
-						["inline"] = true,
-					},
-					{
-						["name"] = "Player DisplayName :",
-						["value"] = game.Players.LocalPlayer.DisplayName,
-						["inline"] = true,
-					},
-					{
-						["name"] = "Player UserId :",
-						["value"] = game.Players.LocalPlayer.UserId,
-						["inline"] = true,
-					},
-					{
-						["name"] = "Player Account Age :",
-						["value"] = game.Players.LocalPlayer.AccountAge,
-						["inline"] = true,
-					},
-					{
-						["name"] = "Executor :",
-						["value"] = identifyexecutor(),
-						["inline"] = true,
-					},
-					{
-						["name"] = "Using Script :",
-						["value"] = gameInfo and gameInfo.Name or "Unknown",
-						["inline"] = true,
-					},
-					{
-						["name"] = "Device :",
-						["value"] = CheckDevice(),
-						["inline"] = true,
-					},
+					{["name"] = "HWID :", ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(), ["inline"] = true},
+					{["name"] = "Player Username :", ["value"] = plr.Name, ["inline"] = true},
+					{["name"] = "Player DisplayName :", ["value"] = plr.DisplayName, ["inline"] = true},
+					{["name"] = "Player UserId :", ["value"] = plr.UserId, ["inline"] = true},
+					{["name"] = "Player Account Age :", ["value"] = plr.AccountAge, ["inline"] = true},
+					{["name"] = "Executor :", ["value"] = identifyexecutor(), ["inline"] = true},
+					{["name"] = "Using Script :", ["value"] = gameInfo and gameInfo.Name or "Unknown", ["inline"] = true},
+					{["name"] = "Device :", ["value"] = CheckDevice(), ["inline"] = true},
 				},
 			},
 		},

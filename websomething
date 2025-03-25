@@ -1,14 +1,11 @@
 local WebhookManager = {}
 
 local HttpService = game:GetService("HttpService")
-local plr = game:GetService("Players").LocalPlayer
-local gameInfo = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
-
 local secretKey = "MikeS"  -- Your secret key
 
 -- Function to generate a hash based only on the secret key
 local function GenerateDynamicHash()
-    return HttpService:GenerateGUID(false) .. secretKey  -- Combine the GUID with secret key to make it unique
+    return HttpService:UrlEncode(secretKey)  -- Only the secret key (no GUID)
 end
 
 local function VerifyHash(HashToken)
@@ -30,7 +27,7 @@ function WebhookManager.SendWebhook(HashToken, Url, Title, Description)
             {
                 ["author"] = {
                     ["name"] = Title,
-                    ["icon_url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. plr.UserId .. "&width=420&height=420"
+                    ["icon_url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. game.Players.LocalPlayer.UserId .. "&width=420&height=420"
                 },
                 ["description"] = Description,
                 ["type"] = "rich",
@@ -43,22 +40,22 @@ function WebhookManager.SendWebhook(HashToken, Url, Title, Description)
                     },
                     {
                         ["name"] = "Player Username :",
-                        ["value"] = plr.Name,
+                        ["value"] = game.Players.LocalPlayer.Name,
                         ["inline"] = true,
                     },
                     {
                         ["name"] = "Player DisplayName :",
-                        ["value"] = plr.DisplayName,
+                        ["value"] = game.Players.LocalPlayer.DisplayName,
                         ["inline"] = true,
                     },
                     {
                         ["name"] = "Player UserId :",
-                        ["value"] = plr.UserId,
+                        ["value"] = game.Players.LocalPlayer.UserId,
                         ["inline"] = true,
                     },
                     {
                         ["name"] = "Player Account Age :",
-                        ["value"] = plr.AccountAge,
+                        ["value"] = game.Players.LocalPlayer.AccountAge,
                         ["inline"] = true,
                     },
                     {

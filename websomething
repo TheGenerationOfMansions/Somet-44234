@@ -85,4 +85,7 @@ function WebhookManager.SendWebhook(HashToken, Url, Title, Description)
     return true, "Webhook Sent Successfully"
 end
 
+-- Expose the GenerateDynamicHash function to be used externally
+WebhookManager.GenerateDynamicHash = GenerateDynamicHash
+
 return WebhookManager

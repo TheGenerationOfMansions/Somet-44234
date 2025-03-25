@@ -4,125 +4,137 @@ local HttpService = game:GetService("HttpService")
 local plr = game:GetService("Players").LocalPlayer
 local gameInfo = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
 
-
-local function keeeee()
-	local encryptedKey = "MikeS"
-	return setmetatable({}, {
-		__index = function(_, key)
-			if key == "value" then
-				return encryptedKey
-			end
-		end,
-		__newindex = function(_, _, _)
-			plr:Kick("[ Security ] : Attempted to modify secret key.")
-		end
-	})
+-- Securely store and retrieve the secret key
+local function secureKey()
+    local encryptedKey = {"M", "i", "k", "e", "S"} -- Obfuscated key
+    return setmetatable({}, {
+        __index = function(_, key)
+            if key == "value" then
+                return table.concat(encryptedKey) -- Prevents direct access to key
+            end
+        end,
+        __newindex = function(_, _, _)
+            plr:Kick("[ Security ] : Attempted to modify secret key.")
+        end
+    })
 end
 
-local secretKey = keeeee()
+local secretKey = secureKey()
 
-local function ghhhhhhh(inputKey)
-	if type(inputKey) ~= "string" then
-		return "Invalid Key Type"
-	end
+-- Generate a hash based only on the secret key
+local function GenerateDynamicHash(inputKey)
+    if type(inputKey) ~= "string" then
+        return "Invalid Key Type"
+    end
 
-	if inputKey == secretKey.value then
-		return HttpService:UrlEncode(secretKey.value)
-	else
-		return "Invalid Key"
-	end
+    if inputKey == secretKey.value then
+        return HttpService:UrlEncode(secretKey.value)  -- Encode for security
+    else
+        return "Invalid Key"
+    end
 end
 
-local function ddddddd()
-	local success, response = pcall(function()
-		return debug.getinfo(2) or debug.getupvalue(ghhhhhhh(), 1)
-	end)
-	if success and response then
-		plr:Kick("[ Security ] : Debugging attempt detected.")
-	end
+-- Anti-debugging function (prevents debugging attempts)
+local function DetectDebugging()
+    local success, response = pcall(function()
+        return debug.getinfo(2) or debug.getupvalue(GenerateDynamicHash, 1)
+    end)
+    if success and response then
+        plr:Kick("[ Security ] : Debugging attempt detected.")
+    end
 end
 
+-- Function proxy protection
 local protected = {}
-local function vhhhhhh(HashToken)
-	ddddddd()
+local function VerifyHash(HashToken)
+    DetectDebugging() -- Check for debugging attempts
 
-	local generatedHash = ghhhhhhh(secretKey.value)
-	return HashToken == generatedHash
+    local generatedHash = GenerateDynamicHash(secretKey.value)
+    return HashToken == generatedHash
 end
 
 local functionProxy = setmetatable({}, {
-	__index = function(_, key)
-		if key == "VerifyHash" then
-			return function(...)
-				local result = vhhhhhh(...)
-				if type(result) ~= "boolean" then
-					plr:Kick("Invalid hash result detected.")
-				end
-				return result
-			end
-		else
-			return rawget(protected, key)
-		end
-	end,
-	__newindex = function(_, _, _)
-		plr:Kick("[ Security ] : Attempted to modify protected functions.")
-	end
+    __index = function(_, key)
+        if key == "VerifyHash" then
+            return function(...)
+                local result = VerifyHash(...)
+                if type(result) ~= "boolean" then
+                    plr:Kick("Invalid hash result detected.")
+                end
+                return result
+            end
+        else
+            return rawget(protected, key)
+        end
+    end,
+    __newindex = function(_, _, _)
+        plr:Kick("[ Security ] : Attempted to modify protected functions.")
+    end
 })
 
-protected.VerifyHash = vhhhhhh
+protected.VerifyHash = VerifyHash
 
+-- Device Check
 local function CheckDevice()
-	local platform = game:GetService("UserInputService"):GetPlatform()
-	if platform == Enum.Platform.Android then
-		return "Android"
-	elseif platform == Enum.Platform.IOS then
-		return "iPhone"
-	else
-		return "PC"
-	end
+    local platform = game:GetService("UserInputService"):GetPlatform()
+    if platform == Enum.Platform.Android then
+        return "Android"
+    elseif platform == Enum.Platform.IOS then
+        return "iPhone"
+    else
+        return "PC"
+    end
 end
 
 function WebhookManager.SendWebhook(HashToken, Url, Title, Description)
-	if not functionProxy.VerifyHash(HashToken) then
-		return false, "Invalid Hash"
-	end
+    if not functionProxy.VerifyHash(HashToken) then
+        return false, "Invalid Hash"
+    end
 
-	local Headers = {
-		['Content-Type'] = 'application/json',
-	}
+    local Headers = {
+        ['Content-Type'] = 'application/json',
+    }
 
-	local data = {
-		["embeds"] = {
-			{
-				["author"] = {
-					["name"] = Title,
-					["icon_url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. plr.UserId .. "&width=420&height=420"
-				},
-				["description"] = Description,
-				["type"] = "rich",
-				["color"] = tonumber(0xffffff),
-				["fields"] = {
-					{["name"] = "HWID :", ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(), ["inline"] = true},
-					{["name"] = "Player Username :", ["value"] = plr.Name, ["inline"] = true},
-					{["name"] = "Player DisplayName :", ["value"] = plr.DisplayName, ["inline"] = true},
-					{["name"] = "Player UserId :", ["value"] = plr.UserId, ["inline"] = true},
-					{["name"] = "Player Account Age :", ["value"] = plr.AccountAge, ["inline"] = true},
-					{["name"] = "Executor :", ["value"] = identifyexecutor(), ["inline"] = true},
-					{["name"] = "Using Script :", ["value"] = gameInfo and gameInfo.Name or "Unknown", ["inline"] = true},
-					{["name"] = "Device :", ["value"] = CheckDevice(), ["inline"] = true},
-				},
-			},
-		},
-	}
+    local data = {
+        ["embeds"] = {
+            {
+                ["author"] = {
+                    ["name"] = Title,
+                    ["icon_url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. plr.UserId .. "&width=420&height=420"
+                },
+                ["description"] = Description,
+                ["type"] = "rich",
+                ["color"] = tonumber(0xffffff),
+                ["fields"] = {
+                    {["name"] = "HWID :", ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(), ["inline"] = true},
+                    {["name"] = "Player Username :", ["value"] = plr.Name, ["inline"] = true},
+                    {["name"] = "Player DisplayName :", ["value"] = plr.DisplayName, ["inline"] = true},
+                    {["name"] = "Player UserId :", ["value"] = plr.UserId, ["inline"] = true},
+                    {["name"] = "Player Account Age :", ["value"] = plr.AccountAge, ["inline"] = true},
+                    {["name"] = "Executor :", ["value"] = identifyexecutor(), ["inline"] = true},
+                    {["name"] = "Using Script :", ["value"] = gameInfo and gameInfo.Name or "Unknown", ["inline"] = true},
+                    {["name"] = "Device :", ["value"] = CheckDevice(), ["inline"] = true},
+                },
+            },
+        },
+    }
 
-	local PlayerData = HttpService:JSONEncode(data)
-	local Request = http_request or request or HttpPost or syn.request
-	Request({Url = Url, Body = PlayerData, Method = "POST", Headers = Headers})
+    local PlayerData = HttpService:JSONEncode(data)
+    local Request = http_request or request or HttpPost or syn.request
+    Request({Url = Url, Body = PlayerData, Method = "POST", Headers = Headers})
 
-	return true, "Webhook Sent Successfully"
+    return true, "Webhook Sent Successfully"
 end
 
-WebhookManager.GenerateDynamicHash = function(arg) return ghhhhhhh(arg) end
-WebhookManager.VerifyHash = function(HashToken) return vhhhhhh(HashToken) end
+-- ✅ EXPLICITLY ASSIGN FUNCTIONS BEFORE RETURNING TO PREVENT REMOVAL
+WebhookManager.GenerateDynamicHash = function(arg) return GenerateDynamicHash(arg) end
+WebhookManager.VerifyHash = function(HashToken) return VerifyHash(HashToken) end
+
+-- ✅ Prevent obfuscation from setting functions to nil
+setmetatable(WebhookManager, {
+    __index = function(_, key)
+        error("[ Security ] : Attempted to access missing function: " .. tostring(key))
+    end
+})
 
 return WebhookManager

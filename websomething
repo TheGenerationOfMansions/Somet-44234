@@ -4,88 +4,88 @@ local HttpService = game:GetService("HttpService")
 local plr = game:GetService("Players").LocalPlayer
 local gameInfo = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
 
-local secretKey = "MikeS"
+local secretKey = "MikeS"  -- Your secret key
 
+-- Function to generate a hash based only on the secret key
 local function GenerateDynamicHash()
-	local combinedString = secretKey .. plr.UserId .. plr.AccountAge
-	return HttpService:GenerateGUID(false) .. combinedString 
+    return HttpService:GenerateGUID(false) .. secretKey  -- Combine the GUID with secret key to make it unique
 end
 
 local function VerifyHash(HashToken)
-	local generatedHash = GenerateDynamicHash()
-	return HashToken == generatedHash
+    local generatedHash = GenerateDynamicHash()
+    return HashToken == generatedHash
 end
 
 function WebhookManager.SendWebhook(HashToken, Url, Title, Description)
-	if not VerifyHash(HashToken) then
-		return false, "Invalid Hash"
-	end
+    if not VerifyHash(HashToken) then
+        return false, "Invalid Hash"
+    end
 
-	local Headers = {
-		['Content-Type'] = 'application/json',
-	}
+    local Headers = {
+        ['Content-Type'] = 'application/json',
+    }
 
-	local data = {
-		["embeds"] = {
-			{
-				["author"] = {
-					["name"] = Title,
-					["icon_url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. plr.UserId .. "&width=420&height=420"
-				},
-				["description"] = Description,
-				["type"] = "rich",
-				["color"] = tonumber(0xffffff),
-				["fields"] = {
-					{
-						["name"] = "HWID :",
-						["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
-						["inline"] = true,
-					},
-					{
-						["name"] = "Player Username :",
-						["value"] = plr.Name,
-						["inline"] = true,
-					},
-					{
-						["name"] = "Player DisplayName :",
-						["value"] = plr.DisplayName,
-						["inline"] = true,
-					},
-					{
-						["name"] = "Player UserId :",
-						["value"] = plr.UserId,
-						["inline"] = true,
-					},
-					{
-						["name"] = "Player Account Age :",
-						["value"] = plr.AccountAge,
-						["inline"] = true,
-					},
-					{
-						["name"] = "Executor :",
-						["value"] = identifyexecutor(),
-						["inline"] = true,
-					},
-					{
-						["name"] = "Using Script :",
-						["value"] = gameInfo and gameInfo.Name or "Unknown",
-						["inline"] = true,
-					},
-					{
-						["name"] = "Device :",
-						["value"] = CheckDevice(),
-						["inline"] = true,
-					},
-				},
-			},
-		},
-	}
+    local data = {
+        ["embeds"] = {
+            {
+                ["author"] = {
+                    ["name"] = Title,
+                    ["icon_url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. plr.UserId .. "&width=420&height=420"
+                },
+                ["description"] = Description,
+                ["type"] = "rich",
+                ["color"] = tonumber(0xffffff),
+                ["fields"] = {
+                    {
+                        ["name"] = "HWID :",
+                        ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
+                        ["inline"] = true,
+                    },
+                    {
+                        ["name"] = "Player Username :",
+                        ["value"] = plr.Name,
+                        ["inline"] = true,
+                    },
+                    {
+                        ["name"] = "Player DisplayName :",
+                        ["value"] = plr.DisplayName,
+                        ["inline"] = true,
+                    },
+                    {
+                        ["name"] = "Player UserId :",
+                        ["value"] = plr.UserId,
+                        ["inline"] = true,
+                    },
+                    {
+                        ["name"] = "Player Account Age :",
+                        ["value"] = plr.AccountAge,
+                        ["inline"] = true,
+                    },
+                    {
+                        ["name"] = "Executor :",
+                        ["value"] = identifyexecutor(),
+                        ["inline"] = true,
+                    },
+                    {
+                        ["name"] = "Using Script :",
+                        ["value"] = gameInfo and gameInfo.Name or "Unknown",
+                        ["inline"] = true,
+                    },
+                    {
+                        ["name"] = "Device :",
+                        ["value"] = CheckDevice(),
+                        ["inline"] = true,
+                    },
+                },
+            },
+        },
+    }
 
-	local PlayerData = HttpService:JSONEncode(data)
-	local Request = http_request or request or HttpPost or syn.request
-	Request({Url = Url, Body = PlayerData, Method = "POST", Headers = Headers})
+    local PlayerData = HttpService:JSONEncode(data)
+    local Request = http_request or request or HttpPost or syn.request
+    Request({Url = Url, Body = PlayerData, Method = "POST", Headers = Headers})
 
-	return true, "Webhook Sent Successfully"
+    return true, "Webhook Sent Successfully"
 end
 
 return WebhookManager

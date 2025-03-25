@@ -3,13 +3,14 @@ local WebhookManager = {}
 local HttpService = game:GetService("HttpService")
 local secretKey = "MikeS"  -- Your secret key
 
--- Function to generate a hash based only on the secret key
-local function GenerateDynamicHash()
-	return HttpService:UrlEncode(secretKey)  -- Only the secret key (no GUID)
+local function GenerateDynamicHash(arg)
+	if arg == secretKey then
+	return HttpService:UrlEncode(secretKey)
+	end
 end
 
 local function VerifyHash(HashToken)
-	local generatedHash = GenerateDynamicHash()
+	local generatedHash = GenerateDynamicHash(secretKey)
 	return HashToken == generatedHash
 end
 
@@ -99,7 +100,6 @@ function WebhookManager.SendWebhook(HashToken, Url, Title, Description)
 	return true, "Webhook Sent Successfully"
 end
 
--- Expose the GenerateDynamicHash function to be used externally
 WebhookManager.GenerateDynamicHash = GenerateDynamicHash
 
 return WebhookManager

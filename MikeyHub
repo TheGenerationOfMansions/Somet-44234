@@ -6,6 +6,10 @@ local scriptURL = "https://raw.githubusercontent.com/"..repo.."/refs/heads/main/
 -- Flag to prevent the script from re-executing after updating
 local scriptUpdated = false
 
+-- Set the current version for testing
+local currentVersion = "1.0.0"
+print("Current Version: " .. currentVersion)
+
 -- Function to get the latest commit hash from GitHub
 local function getLatestCommitHash()
     local success, response = pcall(function()
@@ -80,10 +84,5 @@ elseif latestCommitHash and storedCommitHash ~= latestCommitHash then
         game.Players.LocalPlayer:Kick("Your version is outdated! Please restart to update.")
     end
 else
-    print("Mikey Hub is up to date!")
-end
-
--- Print the test message after the version check
-if scriptUpdated then
-    print("ACTUAL TEST")
+    print("Example Script")
 end

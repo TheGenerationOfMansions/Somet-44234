@@ -7,7 +7,7 @@ local scriptURL = "https://raw.githubusercontent.com/"..repo.."/refs/heads/main/
 local scriptUpdated = false
 
 -- Set the current version for testing
-local currentVersion = "1.0.0"
+local currentVersion = "1.0.1"
 print("Current Version: " .. currentVersion)
 
 -- Function to get the latest commit hash from GitHub

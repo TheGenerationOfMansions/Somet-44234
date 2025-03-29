@@ -3,7 +3,6 @@ local scriptPath = "MikeyHub" -- Your script file path in the repo
 local commitURL = "https://api.github.com/repos/"..repo.."/commits?path="..scriptPath.."&per_page=1"
 local scriptURL = "https://raw.githubusercontent.com/"..repo.."/refs/heads/main/"..scriptPath
 
--- Function to get the latest commit hash from GitHub
 local function getLatestCommitHash()
     local success, response = pcall(function()
         return game:HttpGet(commitURL)
@@ -16,7 +15,6 @@ local function getLatestCommitHash()
     return nil
 end
 
--- Function to fetch the latest version of the script
 local function getLatestScript()
     local success, response = pcall(function()
         return game:HttpGet(scriptURL)
@@ -24,21 +22,18 @@ local function getLatestScript()
     return success and response or nil
 end
 
--- Fetch the stored commit hash from file or global environment
 local function getStoredCommitHash()
     local storedHash = getgenv().MikeyHubCommitHash
     if storedHash then
         return storedHash
     end
 
-    -- If not stored globally, check if the hash is stored in a file
     local file = pcall(function()
         return readfile("MikeyHubCommitHash.txt") -- File that stores the commit hash
     end)
     return file or nil
 end
 
--- Store the commit hash in a file or using getgenv
 local function storeCommitHash(commitHash)
     -- Store globally using getgenv (won't persist after the session ends)
     getgenv().MikeyHubCommitHash = commitHash

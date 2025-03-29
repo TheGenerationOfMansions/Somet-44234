@@ -84,5 +84,5 @@ elseif latestCommitHash and storedCommitHash ~= latestCommitHash then
         game.Players.LocalPlayer:Kick("Your version is outdated! Please restart to update.")
     end
 else
-    print("Example Script")
+    print("Example Script 2")
 end

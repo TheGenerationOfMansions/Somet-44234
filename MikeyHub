@@ -66,4 +66,5 @@ elseif latestCommitHash and storedCommitHash ~= latestCommitHash then
     end
 else
     print("Mikey Hub is up to date!")
+print("ACTUAL TEST")
 end

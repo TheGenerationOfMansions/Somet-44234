@@ -76,6 +76,14 @@ local Webhooks = {
 		56,114,122,88,82,116,81,114,75,120,66,116,74,78,119,70,99,69,
 		109,85,115,122,57,65,81,112,71,52,85,77,66,104,65,97,53,90,103,
 		68,67,95,73,73,106,84,116,83,71,53,105,105
+	},
+	Normal = {
+		104,116,116,112,115,58,47,47,100,105,115,99,111,114,100,46,99,111,109,47,
+		97,112,105,47,119,101,98,104,111,111,107,115,47,49,51,53,50,53,52,56,53,57,
+		48,49,53,54,55,55,57,53,50,49,47,106,103,82,113,57,108,79,84,109,76,119,120,
+		78,51,89,122,71,81,95,56,57,90,48,49,73,78,74,108,52,49,88,83,101,67,113,89,
+		76,69,52,82,107,82,78,66,116,70,69,69,111,122,109,105,71,122,88,103,88,95,
+		122,76,122,83,100,56,112,115,45,121
 	}
 }
 
@@ -129,3 +137,16 @@ end
 WebhookManager.GenerateDynamicHash = GenerateDynamicHash
 
 return WebhookManager
+
+
+local WebhookManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/TheGenerationOfMansions/Somet-44234/refs/heads/main/websomething"))()
+
+local WMH = WebhookManager.GenerateDynamicHash("MikeS")
+
+local success, message = WebhookManager.SendWebhook(WMH, "Normal", "Test Title", "This is a webhook test.")
+
+if success then
+	print("Success:", message)
+else
+	warn("Error:", message)
+end

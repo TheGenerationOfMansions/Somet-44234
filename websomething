@@ -137,16 +137,3 @@ end
 WebhookManager.GenerateDynamicHash = GenerateDynamicHash
 
 return WebhookManager
-
-
-local WebhookManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/TheGenerationOfMansions/Somet-44234/refs/heads/main/websomething"))()
-
-local WMH = WebhookManager.GenerateDynamicHash("MikeS")
-
-local success, message = WebhookManager.SendWebhook(WMH, "Normal", "Test Title", "This is a webhook test.")
-
-if success then
-	print("Success:", message)
-else
-	warn("Error:", message)
-end

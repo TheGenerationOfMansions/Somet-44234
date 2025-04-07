@@ -4,132 +4,143 @@ local HttpService = game:GetService("HttpService")
 local plr = game:GetService("Players").LocalPlayer
 local gameInfo = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
 
--- The encryption key, as you did with "MikeS"
-local encryptedKey = {"M", "i", "k", "e", "S"}
-local function decryptKey()
-    return table.concat(encryptedKey)
+local ru19hwaddhsabd = {"M", "i", "k", "e", "S"}
+local function bbbbbnvcnvnnbb()
+	return table.concat(ru19hwaddhsabd)
 end
 
--- Function to decrypt the webhook URL from a table of characters
-local function decryptURL(urlTable)
-    return table.concat(urlTable)
+local function cnxvcxvbcbv(urlTable)
+	return table.concat(urlTable)
 end
 
-local function GenerateDynamicHash(arg)
-    if arg == decryptKey() then
-        return HttpService:UrlEncode(decryptKey())
-    else
-        return "TheSecretKeyThatMakesThisWorks"
-    end
+local function bkjnfjlbjdadbjsadwa(arg)
+	if arg == bbbbbnvcnvnnbb() then
+		return HttpService:UrlEncode(bbbbbnvcnvnnbb())
+	else
+		return "TheSecretKeyThatMakesThisWorks"
+	end
 end
 
 local protected = {}
-local function VerifyHash(HashToken)
-    local generatedHash = GenerateDynamicHash(decryptKey())
-    return HashToken == generatedHash
+local function vvvvbcbcvggvghvhvhvh(HashToken)
+	local generatedHash = bkjnfjlbjdadbjsadwa(bbbbbnvcnvnnbb())
+	return HashToken == generatedHash
 end
 
 local functionProxy = setmetatable({}, {
-    __index = function(_, key)
-        if key == "VerifyHash" then
-            return function(...)
-                local result = VerifyHash(...)
-                if result ~= true and result ~= false then
-                    plr:Kick("Invalid hash result detected.")
-                end
-                return result
-            end
-        else
-            return rawget(protected, key)
-        end
-    end,
-    __newindex = function(_, _, _)
-        plr:Kick("[ Security ] : Attempted to modify protected functions.")
-    end
+	__index = function(_, key)
+		if key == "VerifyHash" then
+			return function(...)
+				local result = vvvvbcbcvggvghvhvhvh(...)
+				if result ~= true and result ~= false then
+					plr:Kick("Invalid hash result detected.")
+				end
+				return result
+			end
+		else
+			return rawget(protected, key)
+		end
+	end,
+	__newindex = function(_, _, _)
+		plr:Kick("[ Security ] : Attempted to modify protected functions.")
+	end
 })
 
-protected.VerifyHash = VerifyHash
+protected.VerifyHash = vvvvbcbcvggvghvhvhvh()
 
 local function CheckDevice()
-    local platform = game:GetService("UserInputService"):GetPlatform()
-    if platform == Enum.Platform.Android then
-        return "Android"
-    elseif platform == Enum.Platform.IOS then
-        return "iPhone"
-    else
-        return "PC"
-    end
+	local platform = game:GetService("UserInputService"):GetPlatform()
+	if platform == Enum.Platform.Android then
+		return "Android"
+	elseif platform == Enum.Platform.IOS then
+		return "iPhone"
+	else
+		return "PC"
+	end
 end
 
--- Scrambled URL parts (each character stored in a table)
 local Webhooks = {
-    Whitelisted = {
-        "h", "t", "t", "p", "s", ":", "/", "/", "d", "i", "s", "c", "o", "r", "d", ".", "c", "o", "m", "/",
-        "a", "p", "i", "/", "w", "e", "b", "h", "o", "o", "k", "s", "/", "1", "3", "5", "2", "5", "4", "8", "7",
-        "6", "4", "3", "6", "3", "0", "0", "1", "9", "0", "7", "/", "-", "q", "u", "w", "T", "C", "3", "r", "j",
-        "j", "8", "2", "v", "v", "R", "c", "T", "r", "8", "r", "z", "X", "R", "t", "Q", "r", "K", "x", "B", "t",
-        "J", "N", "w", "F", "c", "E", "m", "U", "s", "z", "9", "A", "Q", "p", "G", "4", "U", "M", "B", "h", "A",
-        "a", "5", "Z", "g", "D", "C", "_", "I", "I", "j", "T", "t", "S", "G", "5", "i", "i"
-    },
-    Normal = {
-        "h", "t", "t", "p", "s", ":", "/", "/", "d", "i", "s", "c", "o", "r", "d", ".", "c", "o", "m", "/",
-        "a", "p", "i", "/", "w", "e", "b", "h", "o", "o", "k", "s", "/", "1", "3", "5", "2", "5", "4", "8", "5",
-        "9", "0", "1", "5", "6", "7", "9", "5", "2", "1", "/", "j", "g", "R", "q", "9", "l", "O", "T", "m", "L",
-        "w", "x", "N", "3", "Y", "z", "G", "Q", "_", "8", "9", "Z", "0", "1", "I", "N", "J", "l", "4", "1", "X",
-        "S", "e", "C", "q", "Y", "L", "E", "4", "R", "k", "R", "N", "B", "t", "F", "E", "E", "o", "z", "m", "i",
-        "G", "z", "X", "g", "X", "_", "z", "L", "z", "S", "d", "8", "p", "s", "-", "y"
-    }
+	Whitelisted = {
+		"h", "t", "t", "p", "s", ":", "/", "/", "d", "i", "s", "c", "o", "r", "d", ".", "c", "o", "m", "/",
+		"a", "p", "i", "/", "w", "e", "b", "h", "o", "o", "k", "s", "/", "1", "3", "5", "2", "5", "4", "8", "7",
+		"6", "4", "3", "6", "3", "0", "0", "1", "9", "0", "7", "/", "-", "q", "u", "w", "T", "C", "3", "r", "j",
+		"j", "8", "2", "v", "v", "R", "c", "T", "r", "8", "r", "z", "X", "R", "t", "Q", "r", "K", "x", "B", "t",
+		"J", "N", "w", "F", "c", "E", "m", "U", "s", "z", "9", "A", "Q", "p", "G", "4", "U", "M", "B", "h", "A",
+		"a", "5", "Z", "g", "D", "C", "_", "I", "I", "j", "T", "t", "S", "G", "5", "i", "i"
+	},
+	Blacklisted = {
+		"h", "t", "t", "p", "s", ":", "/", "/", "d", "i", "s", "c", "o", "r", "d", ".", "c", "o", "m", "/",
+		"a", "p", "i", "/", "w", "e", "b", "h", "o", "o", "k", "s", "/", "1", "3", "5", "2", "5", "4", "5", "8",
+		"4", "5", "4", "5", "8", "0", "0", "9", "7", "0", "4", "4", "/", "h", "K", "w", "P", "m", "H", "Q", "n",
+		"V", "t", "c", "p", "0", "S", "v", "6", "e", "w", "g", "G", "f", "R", "k", "5", "f", "S", "J", "R", "U",
+		"w", "7", "r", "L", "m", "h", "s", "A", "-", "J", "7", "F", "f", "c", "F", "k", "3", "g", "H", "3", "I",
+		"v", "e", "A", "L", "c", "b", "v", "c", "8", "K", "B", "O", "u", "J", "6", "y", "Q", "e"
+	},
+	Normal = {
+		"h", "t", "t", "p", "s", ":", "/", "/", "d", "i", "s", "c", "o", "r", "d", ".", "c", "o", "m", "/",
+		"a", "p", "i", "/", "w", "e", "b", "h", "o", "o", "k", "s", "/", "1", "3", "5", "2", "5", "4", "8", "5",
+		"9", "0", "1", "5", "6", "7", "9", "5", "2", "1", "/", "j", "g", "R", "q", "9", "l", "O", "T", "m", "L",
+		"w", "x", "N", "3", "Y", "z", "G", "Q", "_", "8", "9", "Z", "0", "1", "I", "N", "J", "l", "4", "1", "X",
+		"S", "e", "C", "q", "Y", "L", "E", "4", "R", "k", "R", "N", "B", "t", "F", "E", "E", "o", "z", "m", "i",
+		"G", "z", "X", "g", "X", "_", "z", "L", "z", "S", "d", "8", "p", "s", "-", "y"
+	},
+	SecurityLogs = {
+		"h", "t", "t", "p", "s", ":", "/", "/", "d", "i", "s", "c", "o", "r", "d", ".", "c", "o", "m", "/",
+		"a", "p", "i", "/", "w", "e", "b", "h", "o", "o", "k", "s", "/", "1", "2", "8", "4", "5", "7", "6", "1",
+		"5", "3", "4", "1", "0", "9", "9", "4", "2", "6", "8", "/", "0", "x", "s", "v", "Z", "F", "q", "o", "P",
+		"C", "-", "7", "R", "L", "C", "4", "8", "J", "y", "D", "N", "x", "F", "F", "S", "u", "F", "A", "Q", "z",
+		"L", "R", "z", "S", "3", "V", "8", "_", "K", "C", "q", "0", "l", "_", "_", "P", "j", "D", "S", "q", "p",
+		"2", "2", "Q", "c", "I", "i", "K", "V", "p", "i", "t", "c", "1", "v", "Y", "l"
+	}
 }
 
 function WebhookManager.SendWebhook(HashToken, WebhookKey, Title, Description)
-    if not functionProxy.VerifyHash(HashToken) then
-        return false, "Invalid Hash"
-    end
+	if not functionProxy.VerifyHash(HashToken) then
+		return false, "Invalid Hash"
+	end
 
-    -- Retrieve the scrambled webhook URL parts
-    local urlParts = Webhooks[WebhookKey]
-    if not urlParts then
-        return false, "Invalid Webhook Key"
-    end
+	local urlParts = Webhooks[WebhookKey]
+	if not urlParts then
+		return false, "Invalid Webhook Key"
+	end
 
-    -- Unscramble and combine the URL parts
-    local Url = decryptURL(urlParts)
+	local Url = cnxvcxvbcbv(urlParts)
 
-    local Headers = {
-        ['Content-Type'] = 'application/json',
-    }
+	local Headers = {
+		['Content-Type'] = 'application/json',
+	}
 
-    local data = {
-        ["embeds"] = {
-            {
-                ["author"] = {
-                    ["name"] = Title,
-                    ["icon_url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. plr.UserId .. "&width=420&height=420"
-                },
-                ["description"] = Description,
-                ["type"] = "rich",
-                ["color"] = tonumber(0xffffff),
-                ["fields"] = {
-                    {["name"] = "HWID :", ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(), ["inline"] = true},
-                    {["name"] = "Player Username :", ["value"] = plr.Name, ["inline"] = true},
-                    {["name"] = "Player DisplayName :", ["value"] = plr.DisplayName, ["inline"] = true},
-                    {["name"] = "Player UserId :", ["value"] = plr.UserId, ["inline"] = true},
-                    {["name"] = "Player Account Age :", ["value"] = plr.AccountAge, ["inline"] = true},
-                    {["name"] = "Executor :", ["value"] = identifyexecutor(), ["inline"] = true},
-                    {["name"] = "Using Script :", ["value"] = gameInfo and gameInfo.Name or "Unknown", ["inline"] = true},
-                    {["name"] = "Device :", ["value"] = CheckDevice(), ["inline"] = true},
-                },
-            },
-        },
-    }
+	local data = {
+		["embeds"] = {
+			{
+				["author"] = {
+					["name"] = Title,
+					["icon_url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. plr.UserId .. "&width=420&height=420"
+				},
+				["description"] = Description,
+				["type"] = "rich",
+				["color"] = tonumber(0xffffff),
+				["fields"] = {
+					{["name"] = "HWID :", ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(), ["inline"] = true},
+					{["name"] = "Player Username :", ["value"] = plr.Name, ["inline"] = true},
+					{["name"] = "Player DisplayName :", ["value"] = plr.DisplayName, ["inline"] = true},
+					{["name"] = "Player UserId :", ["value"] = plr.UserId, ["inline"] = true},
+					{["name"] = "Player Account Age :", ["value"] = plr.AccountAge, ["inline"] = true},
+					{["name"] = "Executor :", ["value"] = identifyexecutor(), ["inline"] = true},
+					{["name"] = "Using Script :", ["value"] = gameInfo and gameInfo.Name or "Unknown", ["inline"] = true},
+					{["name"] = "Device :", ["value"] = CheckDevice(), ["inline"] = true},
+				},
+			},
+		},
+	}
 
-    local PlayerData = HttpService:JSONEncode(data)
-    local Request = http_request or request or HttpPost or syn.request
-    Request({Url = Url, Body = PlayerData, Method = "POST", Headers = Headers})
+	local PlayerData = HttpService:JSONEncode(data)
+	local Request = http_request or request or HttpPost or syn.request
+	Request({Url = Url, Body = PlayerData, Method = "POST", Headers = Headers})
 
-    return true, "Webhook Sent Successfully"
+	return true, "Webhook Sent Successfully"
 end
 
-WebhookManager.GenerateDynamicHash = GenerateDynamicHash
+WebhookManager.GenerateDynamicHash = bkjnfjlbjdadbjsadwa
 
 return WebhookManager

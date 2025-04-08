@@ -5,7 +5,7 @@ local failed_count = 0
 for _, func in ipairs(required_functions) do
 	local exists = rawget(getgenv(), func) ~= nil
 	support_status[func] = exists
-	if not exists then
+	if exists then
 		failed_count += 1
 	end
 end

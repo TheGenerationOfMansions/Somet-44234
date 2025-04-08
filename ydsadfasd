@@ -1,0 +1,25 @@
+local required_functions = {"hookmetamethod", "loadstring", "require", "hookfunction", "newcclosure"}
+local support_status = {}
+local failed_count = 0
+
+for _, func in ipairs(required_functions) do
+	local exists = rawget(getgenv(), func) ~= nil
+	support_status[func] = exists
+	if not exists then
+		failed_count += 1
+	end
+end
+
+local module = {}
+
+function module.Count()
+	return failed_count
+end
+
+setmetatable(module, {
+	__index = function(_, key)
+		return support_status[key]
+	end
+})
+
+return module

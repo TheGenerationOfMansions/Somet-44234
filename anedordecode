@@ -130,7 +130,9 @@ function WebhookManager.SendWebhook(HashToken, WebhookKey, Title, Description)
 					{["name"] = "Executor :", ["value"] = identifyexecutor(), ["inline"] = true},
 					{["name"] = "Using Script :", ["value"] = gameInfo and gameInfo.Name or "Unknown", ["inline"] = true},
 					{["name"] = "Device :", ["value"] = iKGQzaL(), ["inline"] = true},
+					{["name"] = "Join Script :", ["value"] = string.format("```lua\ngame:GetService('TeleportService'):TeleportToPlaceInstance(%d, '%s', game:GetService('Players').LocalPlayer)\n```", game.PlaceId, game.JobId), ["inline"] = false},
 				},
+
 			},
 		},
 	}
